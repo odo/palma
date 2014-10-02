@@ -1,9 +1,11 @@
-# Palma
+![palm tree](https://raw.githubusercontent.com/odo/palma/e1b776c94a944ce4ac056458e9292ec112919617/doc/palm_tree.png "palm tree")
+
+# palma
 
 
-Palma is an erlang application to dynamically create pools of erlang worker processes, which can be called in a round-robin fashion using http://github.com/odo/revolver.
+palma is an erlang application to dynamically create pools of erlang worker processes, which can be called in a round-robin fashion using http://github.com/odo/revolver.
 
-## Building
+## building
 
 ```
 git clone git://github.com/odo/palma.git
@@ -11,7 +13,7 @@ cd palma
 ./rebar get-deps compile
 ```
 
-## Usage
+## usage
 
 As an example we are using a pool of `palma_sample_worker` processes. `palma_sample_worker` is a simple gen_server that accepts an state on init and can return it along with its pid.
 
