@@ -1,4 +1,3 @@
-
 -module(palma_sup).
 
 -behaviour(supervisor).
