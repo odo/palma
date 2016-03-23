@@ -24,5 +24,14 @@ new(PoolName, PoolSize, ChildSpec, ShutdownDelay, RevolverOptions) ->
       revolver_sup:child_spec(SupervisorName, PoolName, RevolverOptions)
      ).
 
-pid(PoolName) ->
-    revolver:pid(PoolName).
+pid(PoolName) when is_atom(PoolName) or is_pid(PoolName) ->
+    revolver:pid(PoolName);
+
+pid([PoolName | _] = NewArgs) when is_list(NewArgs)->
+    case whereis(PoolName) of
+        undefined ->
+            apply(?MODULE, new, NewArgs),
+            pid(PoolName);
+        PoolPid ->
+            pid(PoolPid)
+    end.

@@ -47,6 +47,17 @@ revolver: Found 3 new processes of 3 total for test_pool2_sup, connected.
 {<0.53.0>,hallo2}
 ```
 
+If you are creating pools on the fly, you can also use the syntax where you just ask for the pid and have the pool started implicitly if it's not running:
+
+```erlang
+1> palma:start().
+2> ChildSpec = {my_id, {palma_sample_worker, start_link, [hallo1]}, permanent, 1000, worker, [palma_sample_worker]}.
+3> palma:pid([test_pool1, 3, ChildSpec]).
+<0.44.0>
+4> palma:pid([test_pool1, 3, ChildSpec]).
+<0.43.0>
+```
+
 ## application structure
 
 here is the supervision tree of the example:
