@@ -58,6 +58,20 @@ If you are creating pools on the fly, you can also use the syntax where you just
 <0.43.0>
 ```
 
+You can also define all the relevant options in a callback module using the `palma_callback` behaviour:
+
+```erlang
+1> palma:start().
+2> Options = #{name => my_sample_worker, initial_state => my_state}.
+3> gen_server:call(palma:pid(palma_sample_worker, Options), state).
+doing something global here...
+{<0.49.0>,my_state}
+4> gen_server:call(palma:pid(palma_sample_worker, Options), state).
+{<0.48.0>,my_state}
+5> gen_server:call(palma:pid(palma_sample_worker, Options), state).
+{<0.42.0>,my_state}
+```
+
 ## application structure
 
 here is the supervision tree of the example:
