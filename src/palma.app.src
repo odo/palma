@@ -6,6 +6,7 @@
   {applications, [
                   kernel,
                   stdlib,
+                  revolver,
                   supervisor2
                  ]},
   {mod, { palma_app, []}},
