@@ -26,25 +26,25 @@ As we see, the different servers from the pool respond in turn.
 
 ```erlang
 1> palma:start().
-ok
+{ok,[revolver,supervisor2,palma]}
 2> palma:new(test_pool1, 3, {my_id, {palma_sample_worker, start_link, [hallo1]}, permanent, 1000, worker, [palma_sample_worker]}).
-{ok,<0.43.0>}
-=INFO REPORT==== 2-Oct-2014::14:53:19 ===
-revolver: Found 3 new processes of 3 total for test_pool1_sup, connected.
+{ok,<0.46.0>}
 3> gen_server:call(palma:pid(test_pool1), state).
-{<0.41.0>,hallo1}
+{<0.43.0>,hallo1}
 4> gen_server:call(palma:pid(test_pool1), state).
-{<0.40.0>,hallo1}
+{<0.45.0>,hallo1}
 5> gen_server:call(palma:pid(test_pool1), state).
-{<0.42.0>,hallo1}
+{<0.44.0>,hallo1}
 6> gen_server:call(palma:pid(test_pool1), state).
-{<0.41.0>,hallo1}
+{<0.43.0>,hallo1}
 7> palma:new(test_pool2, 3, {my_id, {palma_sample_worker, start_link, [hallo2]}, permanent, 1000, worker, [palma_sample_worker]}).
-=INFO REPORT==== 2-Oct-2014::14:53:42 ===
-revolver: Found 3 new processes of 3 total for test_pool2_sup, connected.
-{ok,<0.54.0>}
+{ok,<0.57.0>}
 8> gen_server:call(palma:pid(test_pool2), state).
-{<0.53.0>,hallo2}
+{<0.54.0>,hallo2}
+9> palma:stop(test_pool1).
+ok
+10> palma:stop(test_pool2).
+ok
 ```
 
 If you are creating pools on the fly, you can also use the syntax where you just ask for the pid and have the pool started implicitly if it's not running:
