@@ -1,12 +1,12 @@
 -module(palma).
 
--export([start/0, new/3, new/4, new/5, pid/1, pid/2]).
+-export([start/0, new/3, new/4, new/5, stop/1, pid/1, pid/2]).
 
 -define(DEFAULTSHUTDOWNDELAY, 10000).
 -define(DEFAULTREVOLVEROPTIONS, #{ min_alive_ratio => 1.0, reconnect_delay => 1000}).
 
 start() ->
-    application:start(palma).
+    application:ensure_all_started(palma).
 
 new(PoolName, PoolSize, ChildSpec) ->
     new(PoolName, PoolSize, ChildSpec, ?DEFAULTSHUTDOWNDELAY).
@@ -17,7 +17,7 @@ new(PoolName, PoolSize, ChildSpec, ShutdownDelay) ->
 new(PoolName, PoolSize, ChildSpec, ShutdownDelay, RevolverOptions) ->
     {Id, {M, F, ChildInitArgs}, Restart, Shutdown, Type, Modules} = ChildSpec,
     ChildSpecNew     = {Id, {M, F, []}, Restart, Shutdown, Type, Modules},
-    SupervisorName   = list_to_atom(atom_to_list(PoolName) ++ "_sup"),
+    SupervisorName   = supervisor_name(PoolName),
     {ok, Supervisor} = supervisor:start_child(
         palma_sup,
         {SupervisorName, {palma_pool_sup, start_link, [SupervisorName, ChildSpecNew]}, permanent, ShutdownDelay, supervisor, [palma_pool_sup]}),
@@ -26,6 +26,12 @@ new(PoolName, PoolSize, ChildSpec, ShutdownDelay, RevolverOptions) ->
       palma_sup,
       revolver_sup:child_spec(SupervisorName, PoolName, RevolverOptions)
      ).
+
+stop(PoolName) ->
+    supervisor:terminate_child(palma_sup, revolver_utils:supervisor_name(PoolName)),
+    supervisor:delete_child(palma_sup, revolver_utils:supervisor_name(PoolName)),
+    supervisor:terminate_child(palma_sup, supervisor_name(PoolName)),
+    supervisor:delete_child(palma_sup, supervisor_name(PoolName)).
 
 pid(PoolName) when is_atom(PoolName) or is_pid(PoolName) ->
     revolver:pid(PoolName);
@@ -57,6 +63,10 @@ pid(CallbackModule, Options) when is_atom(CallbackModule) ->
         PoolPid ->
             pid(PoolPid)
     end.
+
+supervisor_name(PoolName) ->
+    list_to_atom(atom_to_list(PoolName) ++ "_sup").
+
 
 apply(Module, Function, Args, Default) ->
     try apply(Module, Function, Args) of
