@@ -10,5 +10,4 @@ start_child(Supervisor, Params) ->
     supervisor2:start_child(Supervisor, Params).
 
 init(ChildSpec) ->
-    {ok, {{simple_one_for_one, 1, 1}, [ChildSpec]}}.
-
+    {ok, {{simple_one_for_one, 100, 1}, [ChildSpec]}}.
