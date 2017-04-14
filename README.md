@@ -26,7 +26,7 @@ As we see, the different servers from the pool respond in turn.
 
 ```erlang
 1> palma:start().
-{ok,[revolver,supervisor2,palma]}
+{ok,[revolver,palma_supervisor2,palma]}
 2> palma:new(test_pool1, 3, {my_id, {palma_sample_worker, start_link, [hallo1]}, permanent, 1000, worker, [palma_sample_worker]}).
 {ok,<0.46.0>}
 3> gen_server:call(palma:pid(test_pool1), state).
