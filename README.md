@@ -47,6 +47,17 @@ ok
 ok
 ```
 
+palma also supports [revolvers](https://github.com/odo/revolver) `lease` mode:
+
+```erlang
+1> palma:start().
+{ok,[revolver,supervisor2,palma]}
+2> palma:new(test_pool1, 3, {my_id, {palma_sample_worker, start_link, [hallo1]}, permanent, 1000, worker, [palma_sample_worker]}, 1000, #{max_message_queue_length => lease}).
+{ok,<0.70.0>}
+3> palma:transaction(test_pool1, fun(Pid) -> {got_this_pid, Pid} end).
+{got_this_pid,<0.69.0>}
+```
+
 If you are creating pools on the fly, you can also use the syntax where you just ask for the pid and have the pool started implicitly if it's not running:
 
 ```erlang
@@ -76,4 +87,3 @@ doing something global here...
 
 here is the supervision tree of the example:
 ![supervision tree](../master/doc/palma_tree.png?raw=true "supervision tree")
-
