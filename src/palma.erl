@@ -1,6 +1,6 @@
 -module(palma).
 
--export([start/0, new/3, new/4, new/5, stop/1, pid/1, pid/2, transaction/2]).
+-export([start/0, new/3, new/4, new/5, stop/1, pid/1, pid/2, transaction/2, transaction/3]).
 
 -define(DEFAULTSHUTDOWNDELAY, 10000).
 -define(DEFAULTREVOLVEROPTIONS, #{ min_alive_ratio => 1.0, reconnect_delay => 1000}).
@@ -66,6 +66,9 @@ pid(CallbackModule, Options) when is_atom(CallbackModule) ->
 
 transaction(PoolName, Fun) when (is_atom(PoolName) or is_pid(PoolName)) and is_function(Fun) ->
   revolver:transaction(PoolName, Fun).
+
+transaction(PoolName, Fun, KillOnError) when (is_atom(PoolName) or is_pid(PoolName)) and is_function(Fun) and is_boolean(KillOnError) ->
+  revolver:transaction(PoolName, Fun, KillOnError).
 
 supervisor_name(PoolName) ->
     list_to_atom(atom_to_list(PoolName) ++ "_sup").
